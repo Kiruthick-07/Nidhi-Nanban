@@ -19,15 +19,18 @@ export default function NidhiNanbanSignup() {
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    minHeight: "100vh",
+    height: "100vh",
     backgroundColor: "#f5f7fa",
-    padding: "20px",
+    padding: "10px",
+    boxSizing: "border-box",
+    overflow: "hidden",
   };
 
   const wrapper = {
     display: "flex",
     width: "100%",
-    maxWidth: "1100px",
+    maxWidth: "1000px",
+    maxHeight: "calc(100vh - 20px)",
     borderRadius: "12px",
     overflow: "hidden",
     boxShadow: "0 6px 24px rgba(3,15,24,0.08)",
@@ -36,25 +39,29 @@ export default function NidhiNanbanSignup() {
 
   const left = {
     flex: "1 1 420px",
-    padding: "32px",
+    padding: "24px",
     backgroundColor: "#ffffff",
+    overflowY: "auto",
+    maxHeight: "calc(100vh - 20px)",
   };
 
   const right = {
     flex: "1 1 480px",
     backgroundColor: "#063F3A",
     color: "#fff",
-    padding: "36px",
+    padding: "24px",
     display: isLarge ? "flex" : "none",
     flexDirection: "column",
     justifyContent: "space-between",
+    overflowY: "auto",
+    maxHeight: "calc(100vh - 20px)",
   };
 
   const logoRow = {
     display: "flex",
     alignItems: "center",
     gap: "12px",
-    marginBottom: "20px",
+    marginBottom: "16px",
   };
 
   const logoBox = {
@@ -77,13 +84,14 @@ export default function NidhiNanbanSignup() {
 
   const input = {
     width: "100%",
-    padding: "12px 14px",
+    padding: "10px 12px",
     borderRadius: "8px",
     border: "1px solid #e6e6e6",
-    marginBottom: "14px",
+    marginBottom: "12px",
     fontSize: "14px",
     backgroundColor: "#fafafa",
     outline: "none",
+    boxSizing: "border-box",
   };
 
   const primaryBtn = {
@@ -161,8 +169,8 @@ export default function NidhiNanbanSignup() {
             </div>
           </div>
 
-          <h2 style={{ marginTop: "6px", marginBottom: "6px" }}>Create an account</h2>
-          <p style={subtitle}>Sign up to manage inventory and money flows with ease.</p>
+          <h2 style={{ marginTop: "4px", marginBottom: "4px", fontSize: "20px" }}>Create an account</h2>
+          <p style={{...subtitle, marginBottom: "16px"}}>Sign up to manage inventory and money flows with ease.</p>
 
           <form onSubmit={handleSubmit}>
             <label style={label}>Name</label>
