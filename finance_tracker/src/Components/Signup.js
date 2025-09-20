@@ -1,11 +1,15 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function NidhiNanbanSignup() {
   const [loading, setLoading] = useState(false);
+  const [userName, setUserName] = useState("");
   const [userMail, setUserMail] = useState("");
   const [userPassword, setUserPassword] = useState("");
   const [isLarge, setIsLarge] = useState(typeof window !== 'undefined' ? window.innerWidth >= 768 : true);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+  const navigate = useNavigate();
 
   useEffect(() => {
     function onResize() {
@@ -147,13 +151,41 @@ export default function NidhiNanbanSignup() {
     fontWeight: 700,
   };
 
-  function handleSubmit(e) {
-    e && e.preventDefault();
+  async function handleSubmit(e) {
+    e.preventDefault();
     setLoading(true);
-    setTimeout(() => {
+    setError("");
+    setSuccess("");
+
+    try {
+      const response = await fetch('http://localhost:5000/signup', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: userName,
+          email: userMail,
+          password: userPassword
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setSuccess("Account created successfully! Redirecting to login...");
+        setTimeout(() => {
+          navigate('/login');
+        }, 1500);
+      } else {
+        setError(data.message || "An error occurred during signup");
+      }
+    } catch (err) {
+      console.error('Signup error:', err);
+      setError("Failed to connect to server. Please try again.");
+    } finally {
       setLoading(false);
-      alert("Signed up successfully with Nidhi Nanban!");
-    }, 1200);
+    }
   }
 
   return (
@@ -173,16 +205,27 @@ export default function NidhiNanbanSignup() {
           <p style={{...subtitle, marginBottom: "16px"}}>Sign up to manage inventory and money flows with ease.</p>
 
           <form onSubmit={handleSubmit}>
+            {error && <div style={{ color: 'red', marginBottom: '10px', textAlign: 'center' }}>{error}</div>}
+            {success && <div style={{ color: 'green', marginBottom: '10px', textAlign: 'center' }}>{success}</div>}
+
             <label style={label}>Name</label>
             <input
               style={input}
               placeholder="Enter your name"
-              value={userMail}
-              onChange={(e) => setUserMail(e.target.value)}
+              value={userName}
+              onChange={(e) => setUserName(e.target.value)}
+              required
             />
 
             <label style={label}>Email</label>
-            <input style={input} placeholder="Enter your email" type="email" />
+            <input
+              style={input}
+              placeholder="Enter your email"
+              type="email"
+              value={userMail}
+              onChange={(e) => setUserMail(e.target.value)}
+              required
+            />
 
             <label style={label}>Password</label>
             <input
@@ -191,6 +234,7 @@ export default function NidhiNanbanSignup() {
               placeholder="Enter your password"
               value={userPassword}
               onChange={(e) => setUserPassword(e.target.value)}
+              required
             />
 
             <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "12px" }}>
@@ -221,9 +265,9 @@ export default function NidhiNanbanSignup() {
 
             <p style={{ textAlign: "center", marginTop: "14px", color: "#666" }}>
               Already have an account?
-              <a href="/login" style={{ marginLeft: "6px", textDecoration: "underline", color: "#063F3A" }}>
+              <Link to="/login"style={{ marginLeft: "6px", textDecoration: "underline", color: "#063F3A" }}>
                 Log in
-              </a>
+             </Link>
             </p>
           </form>
         </div>
