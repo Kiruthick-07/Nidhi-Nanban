@@ -1,8 +1,8 @@
-import NidhiNanbanSignup from './Components/Signup';
+import LandingPage from './Components/Landingpage';
 
 function Pages(){
     return(
-        <NidhiNanbanSignup/>
+        <LandingPage/>
     );
 }
 
