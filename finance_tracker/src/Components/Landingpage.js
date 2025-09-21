@@ -1,10 +1,7 @@
-// FinanceLanding.jsx
-// Single-file React component (JSX) using inline style objects.
-// Place a finance-related image in the same folder and name it `finance-image.png` OR
-// update the import path below to point to your image file (e.g. './Screenshot 2025-09-21 005818.png').
-
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import Lottie from "lottie-react";
+import animationData from "./animation.json";
 
 export default function FinanceLanding() {
   const [isMobile, setIsMobile] = useState(typeof window !== 'undefined' ? window.innerWidth < 768 : false);
@@ -18,20 +15,21 @@ export default function FinanceLanding() {
     return () => window.removeEventListener('resize', onResize);
   }, []);
 
-  // Inline style objects
+  
   const page = {
     fontFamily: "Inter, Arial, sans-serif",
     background: 'linear-gradient(135deg, #f7fbff 0%, #f1f6ff 100%)',
     minHeight: '100vh',
     padding: isMobile ? '20px 18px' : '48px 72px',
-    paddingTop: isMobile ? '100px' : '120px', // Account for navbar
+    paddingTop: isMobile ? '100px' : '120px', 
     boxSizing: 'border-box',
     color: '#0f1724',
     width: '100%'
   };
 
   const container = {
-    maxWidth: 1200,
+    maxWidth: '100%',
+    marginTop:'30px',
     margin: '0 auto',
     display: 'flex',
     gap: 32,
@@ -56,8 +54,8 @@ export default function FinanceLanding() {
   };
 
   const heading = {
-    fontSize: isMobile ? 28 : 44,
-    lineHeight: isMobile ? '34px' : '52px',
+    fontSize: isMobile ? 28 : 60,
+    lineHeight: isMobile ? '34px' : '72px',
     margin: '6px 0 18px 0',
     fontWeight: 700,
     color: '#0b1220'
@@ -79,7 +77,7 @@ export default function FinanceLanding() {
     background: '#4f46e5',
     color: 'white',
     border: 'none',
-    padding: '12px 18px',
+    padding: '15px 27px',
     borderRadius: 10,
     cursor: 'pointer',
     boxShadow: '0 6px 18px rgba(79,70,229,0.16)'
@@ -89,7 +87,7 @@ export default function FinanceLanding() {
     background: 'transparent',
     color: '#4f46e5',
     border: '1.5px solid rgba(79,70,229,0.16)',
-    padding: '10px 16px',
+    padding: '15px 27px',
     borderRadius: 10,
     cursor: 'pointer'
   };
@@ -143,7 +141,7 @@ export default function FinanceLanding() {
 
   const navbarLinks = {
     display: 'flex',
-    gap: isMobile ? '16px' : '24px',
+    gap: isMobile ? '16px' : '60px',
     alignItems: 'center'
   };
 
@@ -151,7 +149,7 @@ export default function FinanceLanding() {
     color: '#425063',
     textDecoration: 'none',
     fontSize: isMobile ? '14px' : '16px',
-    fontWeight: '500',
+    fontWeight: '700',
     transition: 'color 0.3s ease'
   };
 
@@ -171,6 +169,13 @@ export default function FinanceLanding() {
     color: '#6b7280'
   };
 
+  const loginButton = {
+    color:'#4f46e5',
+    cursor:'pointer',
+    fontWeight: '700',
+  };
+
+
   return (
     <div style={page}>
       {/* Navbar */}
@@ -180,11 +185,17 @@ export default function FinanceLanding() {
           <a href="#features" style={navbarLink}>Features</a>
           <a href="#about" style={navbarLink}>About</a>
           <a href="#contact" style={navbarLink}>Contact</a>
-          <button
-            style={navbarButton}
+          <a
+            style={loginButton}
             onClick={() => navigate('/login')}
           >
-            Sign In
+            Login
+          </a>
+          <button
+            style={navbarButton}
+            onClick={() => navigate('/signup')}
+          >
+            Sign Up
           </button>
         </div>
       </nav>
@@ -192,30 +203,19 @@ export default function FinanceLanding() {
       <div style={container}>
         <div style={leftCol}>
           <span style={eyebrow}>Your Money. Your Control.</span>
-          <h1 style={heading}>Take Control of Your Financial Future</h1>
+          <h1 style={heading}>Take Control of Your <span style={{fontSize:'57px',color:'#4f46e5'}}>Financial Future</span></h1>
           <p style={sub}>Track your spending, save smartly, and grow your wealth with simple tools designed for everyone — all in one easy-to-use web app.</p>
 
           <div style={buttonsRow}>
             <button style={primaryBtn} aria-label="Get started" onClick={() => navigate('/login')}>Get Started</button>
             <button style={ghostBtn} aria-label="Learn more" onClick={() => navigate('/signup')}>Learn More</button>
           </div>
-
-          <div style={logosStrip}>
-            <span style={smallText}>Trusted by</span>
-            <img src="https://images.unsplash.com/photo-1559526324-593bc073d938?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3" alt="company" style={{height:28, opacity:0.85, borderRadius:6}} />
-            <div style={{width:1, height:20, background:'#e6eef8', marginLeft:6}} />
-            <span style={smallText}>25k+ businesses</span>
-          </div>
         </div>
 
         <div style={rightCol}>
           <div style={imageCard}>
             {/* Use a finance-related image here. The component imports `FinanceImage` at the top. */}
-            <img
-              src="https://images.unsplash.com/photo-1559526324-593bc073d938?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3"
-              alt="finance overview"
-              style={{width: '100%', height: 'auto', display: 'block', borderRadius: 12, objectFit: 'cover'}}
-            />
+            <Lottie animationData={animationData} loop={true} autoplay={true} style={{ width: '100%', height: '100%' }} />
 
             <div style={{marginTop:12, display:'flex', justifyContent:'space-between', alignItems:'center'}}>
               <div>

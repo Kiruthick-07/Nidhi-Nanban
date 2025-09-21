@@ -173,9 +173,7 @@ export default function NidhiNanbanLogin() {
         setSuccess("Login successful! Redirecting...");
         localStorage.setItem('user', JSON.stringify(data.user));
         setTimeout(() => {
-          // Redirect to dashboard or main app
-          alert(`Welcome back, ${data.user.name}!`);
-          // You can redirect to your main dashboard here
+          navigate('/dashboard');
         }, 1500);
       } else {
         setError(data.message || "Invalid credentials");
