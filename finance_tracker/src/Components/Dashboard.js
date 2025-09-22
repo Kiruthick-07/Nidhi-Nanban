@@ -7,6 +7,7 @@ export default function FinanceDashboard() {
   const [hoveredCard, setHoveredCard] = useState(null);
   const [hoveredRow, setHoveredRow] = useState(null);
 
+  // initial data (kept same)
   const lineChartData = [
     { month: 'Jan', value: 24520.54 },
     { month: 'Feb', value: 23800.32 },
@@ -25,12 +26,89 @@ export default function FinanceDashboard() {
     ]
   };
 
-  const transactions = [
-    { id: 1, account: 'US Bank (****)', transaction: 'Walmart', category: 'Groceries', date: '05/20/2023', amount: -78.20, type: 'expense' },
+  // transactions state (was previously const; now stateful so we can add)
+  const [transactions, setTransactions] = useState([
+    { id: 1, account: 'US Bank (****)', transaction: 'Walmart', category: 'Groceries', date: '05/20/2023', amount: 78.20, type: 'expense' },
     { id: 2, account: 'Wells', transaction: 'Fiverr International', category: 'Other Income', date: '05/19/2023', amount: 502, type: 'income' },
-    { id: 3, account: 'Chase', transaction: 'Amazon Purchase', category: 'Shopping', date: '05/18/2023', amount: -156.45, type: 'expense' },
+    { id: 3, account: 'Chase', transaction: 'Amazon Purchase', category: 'Shopping', date: '05/18/2023', amount: 156.45, type: 'expense' },
     { id: 4, account: 'US Bank', transaction: 'Salary Deposit', category: 'Income', date: '05/15/2023', amount: 2500, type: 'income' }
-  ];
+  ]);
+
+  // Modal state
+  const [modalOpen, setModalOpen] = useState(false);
+  const [modalType, setModalType] = useState('income'); // 'income' or 'expense'
+
+  // form inputs for modal
+  const [form, setForm] = useState({
+    account: '',
+    transaction: '',
+    category: '',
+    amount: '',
+    date: ''
+  });
+
+  const openModal = (type) => {
+    setModalType(type);
+    setForm({
+      account: '',
+      transaction: '',
+      category: '',
+      amount: '',
+      date: new Date().toISOString().slice(0, 10) // default to today in yyyy-mm-dd
+    });
+    setModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setModalOpen(false);
+  };
+
+  const handleFormChange = (e) => {
+    const { name, value } = e.target;
+    setForm(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleAddTransaction = (e) => {
+    e.preventDefault();
+
+    // basic validation
+    if (!form.transaction || !form.amount || !form.date) {
+      alert('Please fill transaction name, amount and date.');
+      return;
+    }
+
+    const parsedAmount = parseFloat(form.amount);
+    if (isNaN(parsedAmount) || parsedAmount <= 0) {
+      alert('Enter a valid positive amount.');
+      return;
+    }
+
+    const newTx = {
+      id: Date.now(),
+      account: form.account || 'Unknown Account',
+      transaction: form.transaction,
+      category: form.category || (modalType === 'income' ? 'Income' : 'Expense'),
+      // keep amount positive in state; display signs in UI
+      amount: parsedAmount,
+      type: modalType
+      // date: store in whatever format you prefer; we'll display as-is
+    };
+
+    // format date to MM/DD/YYYY to match existing rows (if form.date in yyyy-mm-dd)
+    let displayDate = form.date;
+    // if input is yyyy-mm-dd, convert to mm/dd/yyyy
+    if (/^\d{4}-\d{2}-\d{2}$/.test(form.date)) {
+      const [yy, mm, dd] = form.date.split('-');
+      displayDate = `${mm}/${dd}/${yy}`;
+    }
+    newTx.date = displayDate;
+
+    // prepend new transaction to show at top (or push to end as you prefer)
+    setTransactions(prev => [newTx, ...prev]);
+
+    // close modal
+    setModalOpen(false);
+  };
 
   const generatePath = (data) => {
     const maxValue = Math.max(...data.map(d => d.value));
@@ -125,9 +203,7 @@ export default function FinanceDashboard() {
     border: '1px solid rgba(229, 231, 235, 0.5)',
     transition: 'all 0.3s ease'
   };
-  const statuscontainer={
-
-  };
+  const statuscontainer = {};
 
   return (
     <div style={rootStyle}>
@@ -303,6 +379,7 @@ export default function FinanceDashboard() {
                   e.currentTarget.style.transform = 'scale(1)';
                   e.currentTarget.style.boxShadow = 'none';
                 }}
+                onClick={() => openModal('income')}
               >
                 ADD INCOME
               </button>
@@ -328,6 +405,7 @@ export default function FinanceDashboard() {
                   e.currentTarget.style.transform = 'scale(1)';
                   e.currentTarget.style.boxShadow = 'none';
                 }}
+                onClick={() => openModal('expense')}
               >
                 ADD EXPENSE
               </button>
@@ -337,34 +415,33 @@ export default function FinanceDashboard() {
 
         <div style={contentStyle}>
           {/* Balance Cards (individual instead of duplicates) */}
-<div style={{
-  display: 'grid',
-  gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-  gap: '24px',
-  marginBottom: '32px'
-}}>
-  {/* Example: Balance Card 1 */}
-  <div style={{ ...cardCommon }}>
-    <p style={{color:'gray'}}>Current Balance</p>
-    <p style={{backgroundColor:'#b8e7ed',display:'inline',padding:'15px',borderRadius:'10px'}}>💰</p>
-    <h2 style={{fontWeight:'bold', fontSize:'40px'}}>$12,500</h2>
-  </div>
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+            gap: '24px',
+            marginBottom: '32px'
+          }}>
+            {/* Example: Balance Card 1 */}
+            <div style={{ ...cardCommon }}>
+              <p style={{ color: 'gray' }}>Current Balance</p>
+              <p style={{ backgroundColor: '#b8e7ed', display: 'inline', padding: '15px', borderRadius: '10px' }}>💰</p>
+              <h2 style={{ fontWeight: 'bold', fontSize: '40px' }}>$12,500</h2>
+            </div>
 
-  {/* Example: Balance Card 2 */}
-  <div style={{ ...cardCommon }}>
-    <p style={{color:'gray'}}>Income</p>
-    <p style={{backgroundColor:'#b8e7ed',display:'inline',padding:'15px',borderRadius:'10px'}}>📈</p>
-    <h2 style={{fontWeight:'bold' , fontSize:'40px'}}>$1,500</h2>
-  </div>
+            {/* Example: Balance Card 2 */}
+            <div style={{ ...cardCommon }}>
+              <p style={{ color: 'gray' }}>Income</p>
+              <p style={{ backgroundColor: '#b8e7ed', display: 'inline', padding: '15px', borderRadius: '10px' }}>📈</p>
+              <h2 style={{ fontWeight: 'bold', fontSize: '40px' }}>$1,500</h2>
+            </div>
 
-  {/* Example: Balance Card 3 */}
-  <div style={{ ...cardCommon }}>
-    <p style={{color:'gray'}}>Expense</p>
-    <p style={{backgroundColor:'#b8e7ed',display:'inline',padding:'15px',borderRadius:'10px'}}>📉</p>
-    <h2 style={{fontWeight:'bold', fontSize:'40px'}}>$3,200</h2>
-  </div>
-</div>
-
+            {/* Example: Balance Card 3 */}
+            <div style={{ ...cardCommon }}>
+              <p style={{ color: 'gray' }}>Expense</p>
+              <p style={{ backgroundColor: '#b8e7ed', display: 'inline', padding: '15px', borderRadius: '10px' }}>📉</p>
+              <h2 style={{ fontWeight: 'bold', fontSize: '40px' }}>$3,200</h2>
+            </div>
+          </div>
 
           {/* Charts Section */}
           <div style={{
@@ -519,7 +596,10 @@ export default function FinanceDashboard() {
               <h3 style={{ fontSize: '18px', fontWeight: 'bold', color: '#111827', margin: 0 }}>RECENT TRANSACTIONS</h3>
 
               <div style={{ display: 'flex', gap: '16px' }}>
-                <button style={{ color: '#4f46e5', fontWeight: '500', fontSize: '14px', cursor: 'pointer', border: 'none', backgroundColor: 'transparent' }}>
+                <button
+                  style={{ color: '#4f46e5', fontWeight: '500', fontSize: '14px', cursor: 'pointer', border: 'none', backgroundColor: 'transparent' }}
+                  onClick={() => openModal('income')}
+                >
                   + Add new transaction
                 </button>
                 <button style={{ color: '#4f46e5', fontWeight: '500', fontSize: '14px', cursor: 'pointer', border: 'none', backgroundColor: 'transparent' }}>
@@ -558,7 +638,7 @@ export default function FinanceDashboard() {
                       </td>
                       <td style={{ padding: '12px 4px', fontSize: 14, color: '#6b7280' }}>{transaction.date}</td>
                       <td style={{ padding: '12px 4px', fontSize: 14, textAlign: 'right', fontWeight: 600, color: transaction.type === 'income' ? '#10b981' : '#111827' }}>
-                        {transaction.type === 'income' ? '+' : '-'}${Math.abs(transaction.amount)}
+                        {transaction.type === 'income' ? '+' : '-'}${Math.abs(transaction.amount).toLocaleString()}
                       </td>
                       <td style={{ padding: '12px 4px' }}>
                         <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end' }}>
@@ -574,6 +654,109 @@ export default function FinanceDashboard() {
           </div>
         </div>
       </div>
+
+      {/* Modal (Add Income / Add Expense) */}
+      {modalOpen && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          style={{
+            position: 'fixed',
+            inset: 0,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            zIndex: 9999,
+            background: 'rgba(0,0,0,0.35)'
+          }}
+          onClick={closeModal}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              width: 420,
+              background: 'white',
+              borderRadius: 12,
+              padding: 20,
+              boxShadow: '0 20px 50px rgba(2,6,23,0.2)'
+            }}
+          >
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
+              <h3 style={{ margin: 0 }}>{modalType === 'income' ? 'Add Income' : 'Add Expense'}</h3>
+              <button onClick={closeModal} style={{ border: 'none', background: 'transparent', cursor: 'pointer', fontSize: 18 }}>✕</button>
+            </div>
+
+            <form onSubmit={handleAddTransaction} style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+              <label style={{ fontSize: 13, color: '#374151' }}>
+                Account
+                <input
+                  name="account"
+                  value={form.account}
+                  onChange={handleFormChange}
+                  placeholder="e.g. US Bank"
+                  style={{ width: '100%', marginTop: 6, padding: '8px 10px', borderRadius: 8, border: '1px solid #e5e7eb' }}
+                />
+              </label>
+
+              <label style={{ fontSize: 13, color: '#374151' }}>
+                Transaction name
+                <input
+                  name="transaction"
+                  value={form.transaction}
+                  onChange={handleFormChange}
+                  placeholder="e.g. Grocery shopping"
+                  style={{ width: '100%', marginTop: 6, padding: '8px 10px', borderRadius: 8, border: '1px solid #e5e7eb' }}
+                />
+              </label>
+
+              <label style={{ fontSize: 13, color: '#374151' }}>
+                Category
+                <input
+                  name="category"
+                  value={form.category}
+                  onChange={handleFormChange}
+                  placeholder="e.g. Groceries / Salary"
+                  style={{ width: '100%', marginTop: 6, padding: '8px 10px', borderRadius: 8, border: '1px solid #e5e7eb' }}
+                />
+              </label>
+
+              <div style={{ display: 'flex', gap: 10 }}>
+                <label style={{ flex: 1, fontSize: 13, color: '#374151' }}>
+                  Amount
+                  <input
+                    name="amount"
+                    value={form.amount}
+                    onChange={handleFormChange}
+                    placeholder="e.g. 150.00"
+                    style={{ width: '100%', marginTop: 6, padding: '8px 10px', borderRadius: 8, border: '1px solid #e5e7eb' }}
+                  />
+                </label>
+
+                <label style={{ width: 140, fontSize: 13, color: '#374151' }}>
+                  Date
+                  <input
+                    type="date"
+                    name="date"
+                    value={form.date}
+                    onChange={handleFormChange}
+                    style={{ width: '100%', marginTop: 6, padding: '8px 10px', borderRadius: 8, border: '1px solid #e5e7eb' }}
+                  />
+                </label>
+              </div>
+
+              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 10, marginTop: 6 }}>
+                <button type="button" onClick={closeModal} style={{ padding: '8px 14px', borderRadius: 8, border: '1px solid #e5e7eb', background: 'transparent', cursor: 'pointer' }}>
+                  Cancel
+                </button>
+                <button type="submit" style={{ padding: '8px 14px', borderRadius: 8, border: 'none', background: modalType === 'income' ? '#10b981' : '#ef4444', color: 'white', cursor: 'pointer' }}>
+                  Add
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 }
