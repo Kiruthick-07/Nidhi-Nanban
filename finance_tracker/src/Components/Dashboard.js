@@ -125,6 +125,9 @@ export default function FinanceDashboard() {
     border: '1px solid rgba(229, 231, 235, 0.5)',
     transition: 'all 0.3s ease'
   };
+  const statuscontainer={
+
+  };
 
   return (
     <div style={rootStyle}>
@@ -333,37 +336,35 @@ export default function FinanceDashboard() {
         </div>
 
         <div style={contentStyle}>
-          {/* Balance Cards */}
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-            gap: '24px',
-            marginBottom: '32px'
-          }}>
-            {[0, 1, 2].map((index) => (
-              <div
-                key={index}
-                style={{
-                  ...cardCommon,
-                  cursor: 'pointer',
-                  transform: hoveredCard === index ? 'scale(1.05)' : 'scale(1)',
-                  boxShadow: hoveredCard === index ? '0 20px 25px -5px rgba(0, 0, 0, 0.1)' : '0 1px 3px 0 rgba(0, 0, 0, 0.1)'
-                }}
-                onMouseEnter={() => setHoveredCard(index)}
-                onMouseLeave={() => setHoveredCard(null)}
-              >
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
-                  <h3 style={{ color: '#6b7280', fontWeight: '500', margin: 0 }}>Current Balance</h3>
-                  <div style={{ fontSize: '32px' }}>💰</div>
-                </div>
-                <div style={{ fontSize: '32px', fontWeight: 'bold', color: '#111827', marginBottom: '8px' }}>$1,500</div>
-                <div style={{ display: 'flex', alignItems: 'center', color: '#10b981', fontWeight: '600' }}>
-                  <TrendingUp style={{ width: '16px', height: '16px', marginRight: '4px' }} />
-                  +2.5%
-                </div>
-              </div>
-            ))}
-          </div>
+          {/* Balance Cards (individual instead of duplicates) */}
+<div style={{
+  display: 'grid',
+  gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+  gap: '24px',
+  marginBottom: '32px'
+}}>
+  {/* Example: Balance Card 1 */}
+  <div style={{ ...cardCommon }}>
+    <p style={{color:'gray'}}>Current Balance</p>
+    <p style={{backgroundColor:'#b8e7ed',display:'inline',padding:'15px',borderRadius:'10px'}}>💰</p>
+    <h2 style={{fontWeight:'bold', fontSize:'40px'}}>$12,500</h2>
+  </div>
+
+  {/* Example: Balance Card 2 */}
+  <div style={{ ...cardCommon }}>
+    <p style={{color:'gray'}}>Income</p>
+    <p style={{backgroundColor:'#b8e7ed',display:'inline',padding:'15px',borderRadius:'10px'}}>📈</p>
+    <h2 style={{fontWeight:'bold' , fontSize:'40px'}}>$1,500</h2>
+  </div>
+
+  {/* Example: Balance Card 3 */}
+  <div style={{ ...cardCommon }}>
+    <p style={{color:'gray'}}>Expense</p>
+    <p style={{backgroundColor:'#b8e7ed',display:'inline',padding:'15px',borderRadius:'10px'}}>📉</p>
+    <h2 style={{fontWeight:'bold', fontSize:'40px'}}>$3,200</h2>
+  </div>
+</div>
+
 
           {/* Charts Section */}
           <div style={{
