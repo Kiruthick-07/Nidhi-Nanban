@@ -1,12 +1,5 @@
 const mongoose = require('mongoose');
 require('dotenv').config();
-const connect = mongoose.connect(process.env.MONGO_URI);
-
-connect.then(()=>{
-    console.log("Connected to MongoDB Atlas");
-}).catch((err)=>{
-    console.log(err);
-});
 
 const LoginSchema = new mongoose.Schema({
     name: {
@@ -24,5 +17,5 @@ const LoginSchema = new mongoose.Schema({
     },
 });
 
-const collection = new mongoose.model("users", LoginSchema);
-module.exports = collection;
+const User = mongoose.model("users", LoginSchema);
+module.exports = User;

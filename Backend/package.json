@@ -8,13 +8,20 @@
     "dev": "nodemon back.js"
   },
   "dependencies": {
-    "express": "^4.18.2",
     "bcrypt": "^5.1.1",
+    "bcryptjs": "^3.0.2",
     "cors": "^2.8.5",
-    "mongoose": "^8.0.3",
-    "dotenv": "^16.3.1"
+    "dotenv": "^16.6.1",
+    "express": "^4.18.2",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.18.1"
   },
-  "keywords": ["nidhi-nanban", "finance", "backend", "api"],
+  "keywords": [
+    "nidhi-nanban",
+    "finance",
+    "backend",
+    "api"
+  ],
   "author": "",
   "license": "ISC"
 }

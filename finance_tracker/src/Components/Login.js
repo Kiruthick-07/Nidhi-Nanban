@@ -82,7 +82,7 @@ export default function NidhiNanbanLogin() {
   const title = { margin: 0, color: "#063F3A" };
   const subtitle = { color: "#888", marginTop: "6px", marginBottom: "18px" };
 
-  const label = { display: "block", fontSize: "14px", color: "#333", marginBottom: "6px", textAlign:"left", fontWeight:"700" };
+  const label = { display: "block", fontSize: "14px", color: "#333", marginBottom: "6px", textAlign: "left", fontWeight: "700" };
 
   const input = {
     width: "100%",
@@ -172,6 +172,7 @@ export default function NidhiNanbanLogin() {
       if (response.ok) {
         setSuccess("Login successful! Redirecting...");
         localStorage.setItem('user', JSON.stringify(data.user));
+        localStorage.setItem('token', data.token);
         setTimeout(() => {
           navigate('/dashboard');
         }, 1500);
@@ -192,15 +193,15 @@ export default function NidhiNanbanLogin() {
         {/* LEFT - form */}
         <div style={left}>
           <div style={logoRow}>
-            
+
             <div>
-              <h3 style={{ margin: 0, textAlign:"left" }}>Nidhi Nanban</h3>
+              <h3 style={{ margin: 0, textAlign: "left" }}>Nidhi Nanban</h3>
               <div style={{ fontSize: "13px", color: "#666" }}>Inventory & Finance Companion</div>
             </div>
           </div>
 
           <h2 style={{ marginTop: "4px", marginBottom: "4px", fontSize: "20px" }}>Welcome Back</h2>
-          <p style={{...subtitle, marginBottom: "16px"}}>Login to manage inventory.</p>
+          <p style={{ ...subtitle, marginBottom: "16px" }}>Login to manage inventory.</p>
 
           <form onSubmit={handleSubmit}>
             {error && <div style={{ color: 'red', marginBottom: '10px', textAlign: 'center' }}>{error}</div>}
